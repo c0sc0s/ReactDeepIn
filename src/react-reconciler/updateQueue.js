@@ -1,3 +1,5 @@
+import { isFunction } from "../shared/utils";
+
 export function createUpdate(action) {
   return {
     action,
@@ -18,12 +20,13 @@ export function enqueueUpdate(updateQueue, update) {
 
 export function processUpdateQueue(baseState, pendingUpdate) {
   const result = {
-    memoziedState: baseState,
+    memoizedState: baseState,
   };
 
   const action = pendingUpdate?.action;
 
-  result.memoziedState = isFunction(action) ? action(baseState) : action;
+  result.memoizedState =
+    typeof action === "function" ? action(baseState) : action;
 
   return result;
 }

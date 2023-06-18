@@ -3,6 +3,7 @@ import { commitMutationEffects } from "./commitWork";
 import { completeWork } from "./completeWork";
 import { createWorkInProgress } from "./fiber";
 import { MutationMask, NoFlags } from "./fiberFlags";
+import { HostRoot } from "./workTags";
 
 let workInProgress = null;
 
@@ -46,7 +47,7 @@ function renderRoot(root) {
 
 function commitRoot(root) {
   const finishedWork = root.finishedWork;
-  if (finishedWork !== null) return;
+  if (finishedWork === null) return;
 
   root.finishedWork = null;
 
@@ -67,12 +68,13 @@ function commitRoot(root) {
 }
 
 function workLoop() {
-  while (workInProgress !== null) {
+  while (workInProgress) {
     performUnitOfWork(workInProgress);
   }
 }
 
 function performUnitOfWork(fiber) {
+  console.log("d", fiber);
   const next = beginWork(fiber);
   fiber.memoizedProps = fiber.pendingProps;
 

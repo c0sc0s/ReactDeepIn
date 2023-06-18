@@ -7,7 +7,7 @@ export function createContainer(container) {
   const hostRootFiber = new FiberNode(HostRoot, {}, null);
   hostRootFiber.updateQueue = createUpdateQueue();
 
-  return FiberRootNode(container, hostRootFiber);
+  return new FiberRootNode(container, hostRootFiber);
 }
 
 export function updateContainer(element, root) {

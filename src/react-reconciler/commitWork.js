@@ -1,5 +1,5 @@
 import { MutationMask, NoFlags, Placement } from "./fiberFlags";
-import { appendChildToContainer } from "./hostConfig";
+import { appendChildToContainer } from "../react-dom/hostConfig";
 import { HostComponent, HostRoot, HostText } from "./workTags";
 
 let nextEffect = null;
@@ -40,6 +40,7 @@ function commitMutationEffectsOnFiber(finishedWork) {
 function commitPlacement(finishedWork) {
   // 1. 找到父节点
   const hostParent = getHostParent(finishedWork);
+  appendPlacementNodeIntoContainer(finishedWork, hostParent);
 }
 
 function getHostParent(fiber) {
@@ -59,6 +60,16 @@ function getHostParent(fiber) {
 function appendPlacementNodeIntoContainer(finishedWork, hostParent) {
   // 找到 HostComponent 或者 HostText
   if (finishedWork.tag === HostComponent || finishedWork.tag === HostText) {
-    appendChildToContainer(finishedWork);
+    appendChildToContainer(finishedWork.stateNode, hostParent);
+  }
+
+  const child = finishedWork.child;
+  if (child) {
+    appendPlacementNodeIntoContainer(child, hostParent);
+    let sibling = child.sibling;
+    while (sibling) {
+      appendPlacementNodeIntoContainer(sibling, hostParent);
+      sibling = sibling.sibling;
+    }
   }
 }

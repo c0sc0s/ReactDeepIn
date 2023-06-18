@@ -3,7 +3,7 @@ import {
   appendInitialChild,
   createInstance,
   createTextInstance,
-} from "./hostConfig";
+} from "../react-dom/hostConfig";
 import { HostComponent, HostRoot, HostText } from "./workTags";
 
 export function completeWork(wip) {
