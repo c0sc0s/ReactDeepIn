@@ -1,6 +1,12 @@
 import { mountChildFibers, reconcileChildFibers } from "./childFibers";
+import { renderWithHooks } from "./fiberHooks";
 import { processUpdateQueue } from "./upDateQueue";
-import { HostComponent, HostRoot, HostText } from "./workTags";
+import {
+  FunctionComponent,
+  HostComponent,
+  HostRoot,
+  HostText,
+} from "./workTags";
 
 export function beginWork(wip) {
   switch (wip.tag) {
@@ -12,9 +18,19 @@ export function beginWork(wip) {
       return;
     case HostText:
       return null;
+    case FunctionComponent:
+      updateFunctionComponent(wip);
+      return;
     default:
       throw new Error("Unknown fiber tag");
   }
+}
+
+function updateFunctionComponent(wip) {
+  const nextProps = wip.pendingProps;
+  const nextChildren = renderWithHooks;
+  reconcileChildren(wip, nextChildren);
+  return wip.child;
 }
 
 function updateHostRoot(wip) {

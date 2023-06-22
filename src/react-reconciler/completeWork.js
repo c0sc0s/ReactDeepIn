@@ -4,7 +4,12 @@ import {
   createInstance,
   createTextInstance,
 } from "../react-dom/hostConfig";
-import { HostComponent, HostRoot, HostText } from "./workTags";
+import {
+  FunctionComponent,
+  HostComponent,
+  HostRoot,
+  HostText,
+} from "./workTags";
 
 export function completeWork(wip) {
   const newProps = wip.pendingProps;
@@ -33,6 +38,9 @@ export function completeWork(wip) {
       bubbelProperties(wip);
       return null;
     case HostRoot:
+      bubbelProperties(wip);
+      return null;
+    case FunctionComponent:
       bubbelProperties(wip);
       return null;
     default:
