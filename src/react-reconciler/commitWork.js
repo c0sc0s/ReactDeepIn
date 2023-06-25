@@ -1,5 +1,11 @@
-import { MutationMask, NoFlags, Placement } from "./fiberFlags";
-import { appendChildToContainer } from "../react-dom/hostConfig";
+import {
+  ChildDeletion,
+  MutationMask,
+  NoFlags,
+  Placement,
+  Update,
+} from "./fiberFlags";
+import { appendChildToContainer, commitUpdate } from "../react-dom/hostConfig";
 import { HostComponent, HostRoot, HostText } from "./workTags";
 
 let nextEffect = null;
@@ -33,8 +39,18 @@ function commitMutationEffectsOnFiber(finishedWork) {
     commitPlacement(finishedWork);
     finishedWork.flags &= ~Placement;
   }
-  // update
-  // childDeletion
+  if ((flags & Update) !== NoFlags) {
+    commitUpdate(finishedWork);
+    finishedWork.flags &= ~Placement;
+  }
+  if ((flags & ChildDeletion) !== NoFlags) {
+    const deletions = finishedWork.deletions;
+    if (deletions !== null) {
+      deletions.forEach((childToDelete) => {
+        commitDeletion(childToDelete);
+      });
+    }
+  }
 }
 
 function commitPlacement(finishedWork) {
@@ -42,6 +58,8 @@ function commitPlacement(finishedWork) {
   const hostParent = getHostParent(finishedWork);
   appendPlacementNodeIntoContainer(finishedWork, hostParent);
 }
+
+function commitDeletion(childToDelete) {}
 
 function getHostParent(fiber) {
   let parent = fiber.return;

@@ -24,6 +24,7 @@ export class FiberNode {
     this.subtreeFlags = NoFlags;
     this.updateQueue = null;
     this.memoizedState = null;
+    this.deletions = null;
   }
 }
 
